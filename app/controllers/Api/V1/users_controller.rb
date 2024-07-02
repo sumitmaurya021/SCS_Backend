@@ -1,4 +1,3 @@
-# app/controllers/api/v1/users_controller.rb
 module Api
   module V1
     class UsersController < ApplicationController
@@ -6,13 +5,12 @@ module Api
       before_action :doorkeeper_authorize!, only: [:logout, :index, :show, :update, :destroy]
       before_action :set_user, only: [:show, :update, :destroy]
 
-
       def index
         if current_user.role.name == 'admin'
           users = User.all.map { |user| { id: user.id, username: user.username, email: user.email, role: user.role.name } }
           render json: { users: users, message: 'This is a list of all users' }, status: :ok
-          else
-            render json: { error: 'You are not authorized to perform this action' }, status: :unauthorized
+        else
+          render json: { error: 'You are not authorized to perform this action' }, status: :unauthorized
         end
       end
 
@@ -26,7 +24,9 @@ module Api
 
         if role.nil?
           render json: { error: 'Role not found' }, status: :unprocessable_entity
+          return
         end
+
         user.role = role
         client_app = Doorkeeper::Application.find_by(uid: params[:client_id])
         return render(json: { error: 'Invalid client ID' }, status: :forbidden) unless client_app
@@ -38,7 +38,6 @@ module Api
           render json: { error: user.errors.full_messages }, status: :unprocessable_entity
         end
       end
-
 
       def login
         user = User.find_by(username: params[:username])
@@ -54,6 +53,7 @@ module Api
 
       def logout
         current_token = Doorkeeper::AccessToken.find_by(token: params[:access_token])
+
         if current_token
           render_logout_response(current_token.destroy)
         else
@@ -140,7 +140,6 @@ module Api
           break token unless Doorkeeper::AccessToken.exists?(refresh_token: token)
         end
       end
-
     end
   end
 end

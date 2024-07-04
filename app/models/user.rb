@@ -3,19 +3,19 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
          belongs_to :role
 
-        #  Validations
-         validates :email, presence: true, uniqueness: true
-         validates :password, presence: true
-         validates :username, presence: true, uniqueness: true
+  after_initialize :set_default_role, if: :new_record?
 
+  def set_default_role
+    self.role ||= Role.find_by(name: 'customer')
+  end
 
-         private
+  # Methods for roles
+  def is_admin?
+    role.name == "admin"
+  end
 
-         def is_admin?
-           role.name == "admin"
-         end
+  def is_user?
+    role.name == "user"
+  end
 
-         def is_user?
-           role.name == "user"
-         end
 end

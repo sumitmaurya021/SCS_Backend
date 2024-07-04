@@ -101,9 +101,6 @@ module Api
       end
 
       def forgot_password
-
-        binding.pry
-        
         user = User.find_by(email: params[:email])
         if user
           otp = generate_otp

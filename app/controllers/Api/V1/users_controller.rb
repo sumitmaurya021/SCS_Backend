@@ -2,12 +2,13 @@ module Api
   module V1
     class UsersController < ApplicationController
       skip_before_action :doorkeeper_authorize!, only: [:create, :login, :forgot_password, :reset_password]
-      before_action :doorkeeper_authorize!, only: [:logout, :index, :show, :update, :destroy]
+      before_action :doorkeeper_authorize!, only: [:logout, :index, :show, :update, :destroy, :accept_user]
       before_action :set_user, only: [:show, :update, :destroy]
 
       def index
         if current_user.is_admin?
-          users = User.all.map do |user|
+          customer_role = Role.find_by(name: 'customer')
+          users = User.includes(:role).where(role: customer_role).map do |user|
             {
               id: user.id,
               student_name: user.student_name,
@@ -22,14 +23,16 @@ module Api
               course: user.course,
               internship_type: user.internship_type,
               internship_start_date: user.internship_start_date,
-              internship_end_date: user.internship_end_date
+              internship_end_date: user.internship_end_date,
+              status: user.status
             }
           end
-          render json: { users: users, message: 'This is a list of all users' }, status: :ok
+          render json: { users: users, message: 'This is a list of all customers' }, status: :ok
         else
           render json: { error: 'You are not authorized to perform this action' }, status: :unauthorized
         end
       end
+
 
 
       def show
@@ -124,6 +127,29 @@ module Api
           end
         else
           render json: { error: 'Invalid OTP or OTP expired' }, status: :unauthorized
+        end
+      end
+
+      def accept_user
+        user = User.find_by(id: params[:id])
+
+        if user
+          user.update!(status: "Approved")
+          render json: { message: 'User Approved successfully', user: user }, status: :ok
+        else
+          render json: { error: 'User not found' }, status: :not_found
+        end
+      end
+
+
+      def reject_user
+        user = User.find_by(id: params[:id])
+
+        if user
+          user.update!(status: "Rejected")
+          render json: { message: 'User Rejected successfully', user: user }, status: :ok
+        else
+          render json: { error: 'User not found' }, status: :not_found
         end
       end
 

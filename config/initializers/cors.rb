@@ -1,6 +1,6 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "https://32ed-117-97-171-95.ngrok-free.app"
+    origins "https://obliging-goldfish-broadly.ngrok-free.app"
 
     resource "*",
       headers: :any,

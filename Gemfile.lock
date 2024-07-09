@@ -75,6 +75,8 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
+    ansi (1.5.0)
+    ast (2.4.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
     bigdecimal (3.1.8)
@@ -116,6 +118,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    matrix (0.4.2)
     method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.24.1)
@@ -134,8 +137,19 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.6-x86_64-linux)
       racc (~> 1.4)
+    oga (3.4)
+      ast
+      ruby-ll (~> 2.1)
     orm_adapter (0.5.0)
+    pdf-core (0.10.0)
     pg (1.5.6)
+    prawn (2.5.0)
+      matrix (~> 0.4)
+      pdf-core (~> 0.10.0)
+      ttfunk (~> 1.8)
+    prawn-html (0.7.1)
+      oga (~> 3.3)
+      prawn (~> 2.4)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -193,19 +207,28 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    ruby-ll (2.1.3)
+      ansi
+      ast
     stringio (3.1.1)
     thor (1.3.1)
     timeout (0.4.1)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2024.1)
       tzinfo (>= 1.0.0)
     warden (1.2.9)
       rack (>= 2.0.9)
+    weasyprint (0.1.0)
     webrick (1.8.1)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    wicked_pdf (2.8.0)
+      activesupport
+    wkhtmltopdf-binary (0.12.6.7)
     zeitwerk (2.6.16)
 
 PLATFORMS
@@ -218,11 +241,16 @@ DEPENDENCIES
   devise
   doorkeeper
   pg (~> 1.1)
+  prawn
+  prawn-html
   pry-rails
   puma (>= 5.0)
   rack-cors
   rails (~> 7.1.3, >= 7.1.3.4)
   tzinfo-data
+  weasyprint
+  wicked_pdf
+  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 3.3.3p89

@@ -14,10 +14,14 @@ Rails.application.routes.draw do
           post 'reset_password', to: 'users#reset_password'
         end
         member do
+          get 'generate_offer_letter', to: 'users#generate_offer_letter', format: :pdf
           post 'accept_user', to: 'users#accept_user'
           post 'reject_user', to: 'users#reject_user'
+          get 'preview_offer_letter', to: 'users#preview_offer_letter'
         end
       end
+
+      get "credentials", to: "users#credentials"
     end
   end
 end

@@ -4,6 +4,11 @@ ruby "3.3.3"
 gem "pry-rails"
 gem "devise"
 gem 'doorkeeper'
+gem 'wicked_pdf'
+gem "wkhtmltopdf-binary"
+gem 'weasyprint'
+gem 'prawn'
+gem 'prawn-html'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3", ">= 7.1.3.4"

@@ -18,6 +18,7 @@ class User < ApplicationRecord
   validates :internship_type, presence: true
   validates :internship_start_date, presence: true
   validates :internship_end_date, presence: true
+  validates :internship_area, presence: true
 
   validate :password_presence
 

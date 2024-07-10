@@ -3,10 +3,11 @@ module Api
   module V1
     class UsersController < ApplicationController
       skip_before_action :doorkeeper_authorize!, only: [:create, :login, :forgot_password, :reset_password, :credentials, :generate_offer_letter]
-      before_action :doorkeeper_authorize!, only: [:logout, :index, :show, :update, :destroy, :accept_user, :reject_user]
+      before_action :doorkeeper_authorize!, only: [:logout, :index, :show, :update, :destroy, :accept_user, :reject_user, :current_user]
       before_action :set_user, only: [:show, :update, :destroy]
 
       def index
+        current_user = User.find_by(id: doorkeeper_token.resource_owner_id) if doorkeeper_token
         if current_user.is_admin?
           customer_role = Role.find_by(name: 'customer')
           users = User.includes(:role).where(role: customer_role).map do |user|
@@ -26,13 +27,22 @@ module Api
               internship_start_date: user.internship_start_date,
               internship_end_date: user.internship_end_date,
               status: user.status,
-              reference_number: user.reference_number
+              reference_number: user.reference_number,
+              issue_date_of_letter: user.issue_date_of_letter,
+              internship_area: user.internship_area,
+              created_at: user.created_at,
+              updated_at: user.updated_at
             }
           end
           render json: { users: users, message: 'This is a list of all customers' }, status: :ok
         else
           render json: { error: 'You are not authorized to perform this action' }, status: :unauthorized
         end
+      end
+
+      def current_user
+        @current_user ||= User.find_by(id: doorkeeper_token.resource_owner_id) if doorkeeper_token
+        render json: { user: @current_user, message: 'Current User Fetched successfully' }, status: :ok
       end
 
 
@@ -139,30 +149,20 @@ module Api
           issue_date_of_letter = Date.today
           internship_type = user.internship_type
 
-          # Find all existing reference numbers for the current year and internship type
-          existing_reference_numbers = User.where(internship_type: internship_type, status: 'Approved')
-                                           .where("reference_number LIKE ?", "TSS/#{internship_type}/#{current_year}/%")
-                                           .pluck(:reference_number)
-
-          # Extract the sequence numbers from the existing reference numbers
-          existing_sequence_numbers = existing_reference_numbers.map { |ref| ref.split('/').last.to_i }
-
-          # Initialize the sequence number
-          sequence_number = 1
-
           # Find the next available sequence number
-          loop do
-            break unless existing_sequence_numbers.include?(sequence_number)
-            sequence_number += 1
-          end
+          sequence_number_record = SequenceNumber.order(:number).last
+          next_sequence_number = sequence_number_record ? sequence_number_record.number + 1 : 1
+          SequenceNumber.create!(number: next_sequence_number)
 
-          reference_number = "TSS/#{internship_type}/#{current_year}/#{sequence_number.to_s.rjust(3, '0')}"
-          user.update!(status: "Approved", reference_number: reference_number, issue_date_of_letter: issue_date_of_letter)
+          reference_number = "TSS/#{internship_type}/#{current_year}/#{next_sequence_number.to_s.rjust(3, '0')}"
+          user.update!(status: "Approved", sequence_number: next_sequence_number, reference_number: reference_number, issue_date_of_letter: issue_date_of_letter)
           render json: { message: 'User Approved successfully', user: user }, status: :ok
         else
           render json: { error: 'User not found' }, status: :not_found
         end
       end
+
+
 
 
       def reject_user
@@ -196,12 +196,11 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit(:email, :password, :username, :role_name, :student_name, :mobile_number, :college_name, :enrollment_number, :branch, :semester, :course, :internship_type, :internship_start_date, :internship_end_date)
+        params.require(:user).permit(:email, :password, :username, :role_name, :student_name, :mobile_number, :college_name, :enrollment_number, :branch, :semester, :course, :internship_type, :internship_start_date, :internship_end_date, :internship_area )
       end
 
       def user_response(user, access_token)
         {
-          user: {
             id: user.id,
             student_name: user.student_name,
             username: user.username,
@@ -216,9 +215,10 @@ module Api
             internshipship_type: user.internship_type,
             Internship_start_date: user.internship_start_date,
             Internship_end_date: user.internship_end_date,
+            status: user.status,
+            internship_area: user.internship_area,
             created_at: access_token.created_at.to_time.to_i,
             access_token: access_token.token
-          }
         }
       end
 

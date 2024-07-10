@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       end
 
       get "credentials", to: "users#credentials"
+      get "current_user", to: "users#current_user"
     end
   end
 end

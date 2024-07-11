@@ -111,7 +111,9 @@ Doorkeeper.configure do
   # Prefer access_token_expires_in 100.years or similar,
   # which would be functionally equivalent and avoid the risk of unexpected behavior by callers.
   #
-  # access_token_expires_in 2.hours
+  # The above code is a comment in Ruby. It is setting the `access_token_expires_in` value to
+  # `2.hours`. This is a common way to document code or provide explanations for other developers.
+  access_token_expires_in 1.days
 
   # Assign custom TTL for access tokens. Will be used instead of access_token_expires_in
   # option if defined. In case the block returns `nil` value Doorkeeper fallbacks to

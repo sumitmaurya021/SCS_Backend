@@ -10,7 +10,7 @@ module Scs
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
-    config.time_zone = 'Asia/Kolkata'
+    config.time_zone = ('Kolkata')
     config.active_record.default_timezone = :local
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do

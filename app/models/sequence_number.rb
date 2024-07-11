@@ -1,0 +1,2 @@
+class SequenceNumber < ApplicationRecord
+end

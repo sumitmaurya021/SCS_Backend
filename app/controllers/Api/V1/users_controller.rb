@@ -24,11 +24,11 @@ module Api
               semester: user.semester,
               course: user.course,
               internship_type: user.internship_type,
-              internship_start_date: user.internship_start_date,
-              internship_end_date: user.internship_end_date,
+              internship_start_date: user.internship_start_date.strftime('%d-%m-%Y'),
+              internship_end_date: user.internship_end_date.strftime('%d-%m-%Y'),
               status: user.status,
               reference_number: user.reference_number,
-              issue_date_of_letter: user.issue_date_of_letter,
+              issue_date_of_letter: user.issue_date_of_letter.nil? ? nil : user.issue_date_of_letter.strftime('%d-%m-%Y'),
               internship_area: user.internship_area,
               created_at: user.created_at,
               updated_at: user.updated_at
@@ -41,9 +41,39 @@ module Api
       end
 
       def current_user
-        @current_user ||= User.find_by(id: doorkeeper_token.resource_owner_id) if doorkeeper_token
-        render json: { user: @current_user, message: 'Current User Fetched successfully' }, status: :ok
+        if doorkeeper_token
+          @current_user ||= User.find_by(id: doorkeeper_token.resource_owner_id)
+        end
+
+        if @current_user
+          user_info = {
+            id: @current_user.id,
+            student_name: @current_user.student_name,
+            username: @current_user.username,
+            email: @current_user.email,
+            role: @current_user.role.name,
+            mobile_number: @current_user.mobile_number,
+            college_name: @current_user.college_name,
+            enrollment_number: @current_user.enrollment_number,
+            branch: @current_user.branch,
+            semester: @current_user.semester,
+            course: @current_user.course,
+            internship_type: @current_user.internship_type,
+            internship_start_date: @current_user.internship_start_date.strftime('%d-%m-%Y'),
+            internship_end_date: @current_user.internship_end_date.strftime('%d-%m-%Y'),
+            status: @current_user.status,
+            reference_number: @current_user.reference_number,
+            issue_date_of_letter: @current_user.issue_date_of_letter.nil? ? nil : @current_user.issue_date_of_letter.strftime('%d-%m-%Y'),
+            internship_area: @current_user.internship_area,
+            created_at: @current_user.created_at,
+            updated_at: @current_user.updated_at
+          }
+          render json: { user: user_info, message: 'Current User Fetched successfully' }, status: :ok
+        else
+          render json: { error: 'User not found' }, status: :not_found
+        end
       end
+
 
 
 
@@ -213,10 +243,10 @@ module Api
             semester: user.semester,
             course: user.course,
             internshipship_type: user.internship_type,
-            Internship_start_date: user.internship_start_date,
-            Internship_end_date: user.internship_end_date,
+            Internship_start_date: user.internship_start_date.strftime('%d-%m-%Y'),
+            Internship_end_date: user.internship_end_date.strftime('%d-%m-%Y'),
             status: user.status,
-            internship_area: user.internship_area,
+            internship_area: user.internship_area.strftime('%d-%m-%Y'),
             created_at: access_token.created_at.to_time.to_i,
             access_token: access_token.token
         }

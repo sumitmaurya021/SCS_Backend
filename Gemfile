@@ -12,7 +12,7 @@ gem 'prawn-html'
 gem 'caxlsx', '~> 4.1.0'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.3", ">= 7.1.3.4"
+gem "rails", "~> 7.2.0"
 
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"

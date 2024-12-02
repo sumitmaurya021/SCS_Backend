@@ -19,6 +19,11 @@ Rails.application.routes.draw do
           post 'reject_user', to: 'users#reject_user'
           get 'preview_offer_letter', to: 'users#preview_offer_letter'
         end
+        resources :batches, only: [:create] do
+          member do
+            get :export_attendance
+          end
+        end
       end
 
       get "credentials", to: "users#credentials"

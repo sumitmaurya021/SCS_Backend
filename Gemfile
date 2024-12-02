@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.3"
+ruby "3.2.0"
 gem "pry-rails"
 gem "devise"
 gem 'doorkeeper'
@@ -9,6 +9,7 @@ gem "wkhtmltopdf-binary"
 gem 'weasyprint'
 gem 'prawn'
 gem 'prawn-html'
+gem 'caxlsx', '~> 4.1.0'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3", ">= 7.1.3.4"
@@ -51,4 +52,5 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem 'faker'
 end

@@ -5,6 +5,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   belongs_to :role
 
+  has_many :batch_users
+  has_many :batches, through: :batch_users
+
   # validations
   validates :email, presence: true, uniqueness: true, format: { with: Devise::email_regexp }
   validates :username, presence: true, uniqueness: true

@@ -3,16 +3,16 @@ source "https://rubygems.org"
 ruby "3.2.0"
 gem "pry-rails"
 gem "devise"
-gem 'doorkeeper'
+gem 'doorkeeper', '>= 5.8.0'
 gem 'wicked_pdf'
 gem "wkhtmltopdf-binary"
 gem 'weasyprint'
 gem 'prawn'
 gem 'prawn-html'
-gem 'caxlsx', '~> 4.1.0'
+gem 'caxlsx', '~> 4.2.0'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.3", ">= 7.1.3.4"
+gem "rails", "~> 7.1.4"
 
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"

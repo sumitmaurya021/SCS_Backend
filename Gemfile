@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.2.0"
 gem "pry-rails"
-gem "devise"
+gem "devise", ">= 5.0.0"
 gem 'doorkeeper'
 gem 'wicked_pdf'
 gem "wkhtmltopdf-binary"
